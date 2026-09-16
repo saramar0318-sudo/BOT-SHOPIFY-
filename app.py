@@ -3,9 +3,11 @@ import re
 import io
 import requests
 import streamlit as st
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 from claude_ia import generar_contenido_producto
 from shopify_api import crear_producto_shopify
