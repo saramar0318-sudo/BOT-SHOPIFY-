@@ -1,5 +1,5 @@
 streamlit
-anthropices
+anthropic
 requests
-pillow
+Pillow
 python-dotenv
