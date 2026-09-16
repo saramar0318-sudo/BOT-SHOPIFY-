@@ -1,0 +1,5 @@
+streamlit
+anthropices
+requests
+pillow
+python-dotenv
