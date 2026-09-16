@@ -71,7 +71,6 @@ def generar_contenido_producto(link_producto, notas_manuales):
         mensaje = cliente.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=1200,
-            temperature=0.7,
             messages=[{"role": "user", "content": prompt}]
         )
         
