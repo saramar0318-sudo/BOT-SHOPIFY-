@@ -57,8 +57,8 @@ with col_btn:
 
 # --- FUNCIÓN CON CACHÉ PARA LA IA ---
 @st.cache_data(show_spinner=False)
-def obtener_datos_inteligentes_con_cache(link, notas):
-    return generar_contenido_producto(link, notas)
+def obtener_datos_inteligentes_con_cache(link, notas, imagen_bytes=None, mime_type="image/jpeg"):
+    return generar_contenido_producto(link, notas, imagen_bytes, mime_type)
 
 # --- FUNCIÓN INTELIGENTE DE SKU ---
 def extraer_sku_inteligente(link, titulo_producto):
@@ -170,8 +170,24 @@ if btn_publicar:
     with st.spinner("Conectando con IA, generando SKU inteligente, procesando imágenes y publicando..."):
         
         try:
-            # 1. Obtención de datos de IA
-            contenido_ia = obtener_datos_inteligentes_con_cache(link_producto, notas_manuales)
+            # --- NUEVO: Capturar la primera foto disponible para la IA (Visión Multimodal) ---
+            primera_imagen_bytes = None
+            mime_type = "image/jpeg"
+
+            todas_las_fotos = (archivos_referencia_manuales or []) + (archivos_reales or [])
+            if todas_las_fotos:
+                primera_foto = todas_las_fotos[0]
+                primera_imagen_bytes = primera_foto.getvalue()
+                if primera_foto.type:
+                    mime_type = primera_foto.type
+
+            # 1. Obtención de datos de IA (Pasando la imagen como respaldo visual)
+            contenido_ia = obtener_datos_inteligentes_con_cache(
+                link_producto, 
+                notas_manuales, 
+                primera_imagen_bytes, 
+                mime_type
+            )
             
             if not contenido_ia or not isinstance(contenido_ia, dict):
                 st.error("⚠️ La IA no devolvió un formato válido.")
