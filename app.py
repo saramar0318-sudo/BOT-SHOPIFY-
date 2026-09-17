@@ -3,13 +3,19 @@ import re
 import io
 import requests
 import streamlit as st
+import importlib
+
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
     pass
 
+# --- FORZAR RECARGA DEL MÓDULO IA PARA EVITAR MEMORIA EN CACHÉ DE PYTHON ---
+import claude_ia
+importlib.reload(claude_ia)
 from claude_ia import generar_contenido_producto
+
 from shopify_api import crear_producto_shopify
 from marca_agua import procesar_imagen_streamlit
 
@@ -97,13 +103,11 @@ titulo_manual = st.text_input("Título del producto (Déjalo vacío para generar
 st.markdown("---")
 st.subheader("💵 Detalles de Venta, Inventario y Publicación")
 
-col_estado, col_sku_info = st.columns(2)
-with col_estado:
-    estado_publicacion_shopify = st.selectbox(
-        "Estado del producto en Shopify", 
-        ["Borrador (Draft) - Recomendado para revisar", "Activo (Visible al público de inmediato)"],
-        key=f"estado_shop_{st.session_state.form_version}"
-    )
+estado_publicacion_shopify = st.selectbox(
+    "Estado del producto en Shopify", 
+    ["Borrador (Draft) - Recomendado para revisar", "Activo (Visible al público de inmediato)"],
+    key=f"estado_shop_{st.session_state.form_version}"
+)
 
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -155,7 +159,6 @@ archivos_reales = st.file_uploader(
 # --- BOTONES Y EJECUCIÓN AL FINAL ---
 st.markdown("---")
 
-# Creamos 2 columnas: la primera ocupa la mayor parte y la segunda el lado derecho
 col_accion, col_cache = st.columns([3, 1])
 
 with col_cache:
@@ -170,7 +173,7 @@ if btn_publicar:
     with st.spinner("Conectando con IA, generando SKU inteligente, procesando imágenes y publicando..."):
         
         try:
-            # --- NUEVO: Capturar la primera foto disponible para la IA (Visión Multimodal) ---
+            # --- Capturar la primera foto disponible para la IA (Visión Multimodal) ---
             primera_imagen_bytes = None
             mime_type = "image/jpeg"
 
@@ -245,7 +248,7 @@ if btn_publicar:
                 )
 
                 if exito:
-                    st.cache_data.clear()  # <-- Limpia el caché automáticamente al publicar
+                    st.cache_data.clear()
                     st.balloons()
                     st.success(f"🎉 ¡Producto procesado con éxito! (SKU generado: `{sku_detectado}`)")
                     st.markdown(f"**Enlace al producto:** [Ver en Shopify]({resultado})")
