@@ -62,7 +62,7 @@ def generar_contenido_producto(link_producto, notas_manuales, imagen_bytes=None,
     # 4. Llamada a Claude
     try:
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-5",
             max_tokens=2000,
             messages=[{"role": "user", "content": content_payload}]
         )
