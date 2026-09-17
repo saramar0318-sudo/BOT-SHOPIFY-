@@ -59,7 +59,7 @@ with col_btn:
 @st.cache_data(show_spinner=False)
 def obtener_datos_inteligentes_con_cache(link, notas, imagen_bytes=None, mime_type="image/jpeg"):
     return generar_contenido_producto(link, notas, imagen_bytes, mime_type)
-
+    
 # --- FUNCIÓN INTELIGENTE DE SKU ---
 def extraer_sku_inteligente(link, titulo_producto):
     if link:
